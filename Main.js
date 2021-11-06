@@ -496,13 +496,101 @@ class HashTable {
     }
   }
 
+  // Loop through all of the keys of our hash tables
+  keys() {
+    if (!this.data.length) {
+      return undefined;
+    }
+
+    const keyArray = [];
+
+    for (let i = 0; i < this.data.length; i++) {
+      if(this.data[i] && this.data[i].length) {
+        if(this.data.length > 1) {
+          for (let j = 0; j < this.data[i].length; j++) {
+            keyArray.push(this.data[i][j][0]);
+          }
+        } else {
+          keyArray.push(this.data[i][0][0]);
+        }
+      }
+    }
+    return keyArray;
+  }
+
 }
 
 console.log('-------------------Hash Maps-------------------');
 
-const hashTableA = new HashTable(2);
+const hashTableA = new HashTable(50);
 hashTableA.set('grapes', 10000);
 hashTableA.set('apples', 54);
+hashTableA.set('oranges', 2);
+hashTableA.set('bananas', 10);
+hashTableA.set('artichoke', 15);
 
 console.log(hashTableA.get('grapes'));
 hashTableA.get(hashTableA.get('apples'));
+console.log(hashTableA.keys());
+
+/*
+    hash table vs array
+
+    O(1) vs O(n) -- search
+    O(1) vs O(1) -- lookup
+    O(1) vs O(n) -- insert
+    O(1) vs O(n) -- delete
+
+    - Hash tables don't have a concept of order and are subject to collision
+
+ */
+
+/*
+  Given an array tell me what the first recurring character is
+  Input = [2, 5, 1, 2, 3, 5, 1, 2, 4]
+  Output = 2
+
+  Input = [2, 1, 1, 3]
+  Output = 1
+
+  Input = [1, 2, 3, 4]
+  Output = undefined
+
+ */
+
+const firstRepeatingValue = function (array) {
+  if (!array.length) {
+    return undefined;
+  }
+
+  let map = {};
+
+  for (let i = 0; i < array.length; i++) {
+    // if (map[array[i]]) and this reads as if there exists array[i] key in map
+    if (array[i] in map) {
+      return array[i];
+    } else {
+      map[array[i]] = i;
+    }
+  }
+  return undefined;
+}
+
+const arrayL = [2, 5, 1, 2, 3, 5];
+console.log(firstRepeatingValue(arrayL));
+
+const arrayM = [];
+console.log(firstRepeatingValue(arrayM));
+
+const arrayN = [1, 2, 3, 4];
+console.log(firstRepeatingValue(arrayN));
+
+const arrayO = [2];
+console.log(firstRepeatingValue(arrayO));
+
+const arrayP = [2, 1, 1, 2];
+console.log(firstRepeatingValue(arrayP));
+
+const arrayQ = [2, 1, 3, 1, 3, 2, 1];
+console.log(firstRepeatingValue(arrayQ));
+
