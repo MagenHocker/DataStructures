@@ -432,6 +432,9 @@ console.log(rotateBetter(arrayK, 3));
       1.) Separate Chaining - Linked lists
       2.)
 
+  - Maps maintain insertion order in javaScript
+  - Sets only store the keys
+
  */
 
 let user = {
@@ -448,3 +451,58 @@ user.spell = 'abra kadabra'; // O(1)
 user.scream(); // O(1)
 
 
+const a = new Map();
+const b = new Set();
+
+class HashTable {
+  constructor(size) {
+    this.data = new Array(size);
+  }
+
+  // _ in JS world this means private development standard
+  _hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash + key.charCodeAt(i) * i) % this.data.length;
+    }
+    return hash;
+  }
+
+  // O(1)
+  set(key, value) {
+    let address = this._hash(key);
+    if (!this.data[address]) {
+      this.data[address] = [];
+      this.data[address].push([key, value]);
+    } else {
+      this.data[address].push([key, value]);
+      return this.data;
+    }
+  }
+
+  // O(1) if there are no collisions --> O(n) if there is a collision
+  get(key) {
+    let address = this._hash(key);
+    const currentBucket = this.data[address];
+    console.log(currentBucket);
+    if (currentBucket.length) {
+      for (let i = 0; i < currentBucket.length; i++) {
+        if (currentBucket[i][0] === key) {
+          return currentBucket[i][1];
+        }
+      }
+    } else {
+      return undefined;
+    }
+  }
+
+}
+
+console.log('-------------------Hash Maps-------------------');
+
+const hashTableA = new HashTable(2);
+hashTableA.set('grapes', 10000);
+hashTableA.set('apples', 54);
+
+console.log(hashTableA.get('grapes'));
+hashTableA.get(hashTableA.get('apples'));
