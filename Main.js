@@ -1179,3 +1179,344 @@ console.log(queueB);
 
 queueB.dequeue()
 console.log(queueB);
+
+
+/*
+  ------------------------- Trees -----------------------------
+
+  Trees are a hierarchical structure
+
+                            1   [Root]
+                          /   \
+                        2       3
+                      /   \   /   \
+                    L     L   4    5
+                            /   \ / \
+                            L   L L  L
+
+  Binary Search Tree:
+    1.) Each Node can only have 0, 1, or 2 children
+    2.) Each Node can only have 1 parent
+
+  Perfect Binary Tree - All the leaf nodes are full and there are no nodes w/
+                        1 child, the bottom layer is entirely there
+
+  Properties of Perfect Binary Trees
+                  1.) The number of total nodes double as we move down trees
+                  2.) All Nodes above it + 1 is going to equal the bottom level
+                  3.) Half of the data is in the bottom level
+
+  Level X = 2^X - 1
+  Level 0 = 2^0 = 1
+  Level 1 = 2^1 = 2
+  Level 2 = 2^2 = 4
+  Level 3 = 2^3 = 8
+  determines the amount of nodes at that level or in the tree total
+
+  log(nodes) = height
+  log 100 = 2
+  10^2 = 100
+
+  Full Binary Tree - All Nodes have 2 children
+
+  lookup -- O(log n)
+  insert -- O(log n)
+  delete -- O(log n)
+
+  balanced vs unbalanced BST
+  - Unbalanced Search trees can create (essentially) a list where now you
+  are performing O(n) functions as opposed to log(n)
+
+  - Balancing our binary search tree
+
+  - AVL or RedBlack Tree automatically balance themselves
+
+  Pros:
+  1.) Better than O(n)
+  2.) Ordered
+  3.) Flexible Times
+
+  Cons:
+  1.) No O(1) operations
+
+  Binary Heaps
+  - Max heaps have a root node of the greatest value where each child node is
+  less than their parent Node
+  - Min Heaps have a root node of the minimum value where each child node is
+  greater than their parent node
+
+  O(n) lookup -- BST left < right but Binary Heaps are just parent < or > child
+  O(log n) insert
+  O(log n) delete
+
+  bubble up -- add a value and it switches with higher values till it reaches
+  its proper place
+
+  Priority Queues: A queue but certain items come before others
+
+
+  Binary Heaps Pros and Cons
+
+  Pros:
+  1.) Better than O(n)
+  2.) Priority
+  3.) Flexible Size
+  4.) Fast Insert
+
+  Cons:
+  1.) Slow lookup
+
+  Trie: A specialized tree used for searching depending on the type of search
+        especially with words characters
+
+  AKA -- Prefix Tree
+
+        empty root node and searching words in a dictionaries
+
+  O(length of word) Search
+
+
+ */
+
+class NodeBST {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value) {
+    let Node = new NodeBST(value);
+    if (this.root === null) {
+      this.root = Node;
+    }
+    else {
+      let currentNode = this.root;
+      while (true) {
+        if (value < currentNode.value) {
+          if (!currentNode.left) {
+            currentNode.left = Node;
+            return this;
+          }
+          currentNode = currentNode.left;
+        }
+        else {
+          if (!currentNode.right) {
+            currentNode.right = Node;
+            return this;
+          }
+          currentNode = currentNode.right;
+        }
+      }
+    }
+  }
+
+  _traverse(node) {
+    const tree = {value: node.value};
+    tree.left = node.left === null ? null : this._traverse(node.left);
+    tree.right = node.right === null ? null : this._traverse(node.right);
+    return tree;
+  }
+
+  lookup(value) {
+    if (!this.root) {
+      return false;
+    }
+    let currentNode = this.root;
+    while (currentNode) {
+      if (value < currentNode.value) {
+        currentNode = currentNode.left;
+      }
+      else if (value > currentNode.value) {
+        currentNode = currentNode.right;
+      }
+      else {
+        return currentNode;
+      }
+    }
+    return false;
+  }
+
+  remove(value) {
+
+    if(!this.root) {
+      return false;
+    }
+
+    let currentNode = this.root;
+    let parentNode = null;
+
+    while (currentNode) {
+      if (value < currentNode.value) {
+        parentNode = currentNode;
+        currentNode = currentNode.left;
+      }
+      else if (value > currentNode.value) {
+        parentNode = currentNode;
+        currentNode = currentNode.right;
+      } else if (currentNode.value === value) {
+        // Option 1: there are no right values
+        if (currentNode.right === null) {
+          if (parentNode === null) {
+            this.root = currentNode.left;
+          } else {
+            if (currentNode.value < parentNode.value) {
+              parentNode.left = currentNode.left;
+            } else if (currentNode.value > parentNode.value) {
+              parentNode.right = currentNode.left;
+            }
+          }
+          // Option 2.a
+        } else if ( currentNode.right.left === null) {
+          if (parentNode === null) {
+            this.root = currentNode.left;
+          } else {
+            currentNode.right.left = currentNode.left;
+
+            if (currentNode.value < parentNode.value) {
+              parentNode.left = currentNode.right;
+            } else if (currentNode.value > parentNode.value) {
+              parentNode.right = currentNode.right;
+            }
+          }
+        } else {
+          let leftMost = currentNode.right.left;
+          let leftMostParent = currentNode.right;
+          while (leftMost.left !== null) {
+            leftMostParent = leftMost;
+            leftMost = leftMost.left;
+          }
+
+          leftMostParent.left = leftmost.right;
+          leftMost.left = currentNode.left;
+          leftMost.right = currentNode.right;
+
+          if (parentNode === null) {
+            this.root = leftmost;
+          } else {
+            if (currentNode.value < parentNode.value) {
+              parentNode.left = leftMost;
+            } else if (currentNode.value > parentNode.value) {
+              parentNode.right = leftMost;
+            }
+          }
+        }
+        return true;
+      }
+    }
+  }
+
+}
+
+console.log('-------------- Trees ----------------');
+
+const treeA = new BinarySearchTree();
+treeA.insert(9);
+treeA.insert(4);
+treeA.insert(6);
+treeA.insert(1);
+treeA.insert(20);
+treeA.insert(15);
+treeA.insert(170);
+console.log(treeA);
+
+console.log(treeA.lookup(9));
+console.log(treeA.lookup(5));
+treeA.remove(6);
+console.log(treeA);
+
+
+
+/*
+  ------------------------- Graphs -----------------------------
+
+  A set of values that are related in a pairwise function
+
+  in a graph each item is called a node or a vertex which are then connected
+  with edges
+
+  directed vs undirected graphs
+
+  weighted vs unweighted graphs
+
+  cyclic vs acyclic
+
+  - Directed Acyclic Graph (DAG)
+  - Bipartite Graph
+
+  Graph Exercise:
+  1.) Undirected Unweighted cyclic Graph
+  2.) Undirected Weighted Cyclic Graph
+  3.) Directed Unweighted Acyclic Graph
+  4.) Directed Weighted Acyclic Graph
+
+  How to Build Graph
+  1.) Edge List ---> const graph = [[0, 2], [2, 3], [2, 1], [1, 3]];
+  2.) Adjacency List ---> const graph [[2], [2,3], [0, 1, 3]];
+      Index is the node and the array is their connections
+      *Note: Use Adjacency List when you want to traverse the list
+
+  3.) Adjacency Matrix ---> const graph [
+      [0, 0, 1, 0],
+      [0, 0, 1, 1],
+      [1, 1, 0, 1],
+      [0, 1, 1, 0]
+      ];
+      0s and 1s to determine if there exists a connection at that node with
+      the same index as the value in the list
+      0s and 1s can be replaced with values if there is a weighted list
+      *Note: Use Matrix when you want to use a lot of lookup functions
+
+
+  Pros:
+  Relationships
+
+  Cons:
+  Scaling is Hard
+
+ */
+
+class Graph {
+  constructor() {
+    this.numberOfNodes = 0;
+    this.adjacencyList = {};
+  }
+
+  addVertex(node) {
+    this.adjacencyList[node] = [];
+    this.numberOfNodes++;
+  }
+
+  addEdge(node1, node2) {
+    this.adjacencyList[node1].push(node2);
+    this.adjacencyList[node2].push(node1);
+  }
+}
+
+console.log('-------------- Graphs ----------------');
+
+const graphA = new Graph();
+graphA.addVertex('0');
+graphA.addVertex('1');
+graphA.addVertex('2');
+graphA.addVertex('3');
+graphA.addVertex('4');
+graphA.addVertex('5');
+graphA.addVertex('6');
+
+graphA.addEdge('0', '1');
+graphA.addEdge('0', '2');
+graphA.addEdge('1', '2');
+graphA.addEdge('1', '3');
+graphA.addEdge('2', '4');
+graphA.addEdge('3', '4');
+graphA.addEdge('4', '5');
+graphA.addEdge('5', '6');
+
+console.log(graphA);
